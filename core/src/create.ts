@@ -32,6 +32,26 @@ type ParsedSchemaKey<S, K> = S extends SchemaMap<S>
 		: never
 	: never
 
+type ParsedQueryKey<S, K> = S extends SchemaMap<S>
+	? K extends QueryKeys<S>
+		? K extends `${string}/${infer QueryKey}`
+			? QueryKey
+			: never
+		: never
+	: never
+
+type ParsedSchemaFn<S, K> = S extends SchemaMap<S>
+	? {
+			[SchemaKey in keyof S]: {
+				[QueryKey in keyof S[SchemaKey]]: QueryKey extends ParsedQueryKey<S, K>
+					? S[SchemaKey][QueryKey] extends Fn
+						? S[SchemaKey][QueryKey]
+						: never
+					: never
+			}[keyof S[SchemaKey]]
+	  }[keyof S]
+	: never
+
 /**
  * Creates a new function that can be used to retrieve query functions from a set of schemas.
  * @param schemas - An object that maps schema keys to schema objects.
@@ -69,13 +89,12 @@ export function create<S>(schemas: SchemaMap<S>) {
 	 * @template K - The type of the query key.
 	 */
 	const get = <K extends QueryKeys<S>>(key: K, queryArgs: SchemaArgs<S, K>) => {
-		const queryFn = schemas[getSchemaKey(key)][key]
-		const queryKey = [key, ...queryArgs]
-		return {
-			queryFn,
-			queryKey,
-			key,
-		}
+		const queryFn = schemas[getSchemaKey(key)][key] as ParsedSchemaFn<S, K>
+		return queryFn(...queryArgs)
 	}
-	return get
+	const prepare = <K extends QueryKeys<S>>(key: K, queryArgs: SchemaArgs<S, K>) => {
+		const queryFn = schemas[getSchemaKey(key)][key] as ParsedSchemaFn<S, K>
+		return { queryFn, queryArgs, queryKey: [key, queryArgs], schemaKey: getSchemaKey(key) }
+	}
+	return { get, prepare }
 }
