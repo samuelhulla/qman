@@ -1,5 +1,6 @@
 export type Fn = (...args: any[]) => any
-export type Modifier<F extends Fn, R> = (arg: ReturnType<F>) => R
+export type HashedQueryKey<S extends string, K extends string, A extends readonly unknown[]> = [`${S}/${K}`, ...A]
+export type Modifier<K extends string, F extends Fn, R> = (arg: ReturnType<F>, hashKey: HashedQueryKey<string, K, Parameters<F>>) => R
 
 /**
  * Builds a query from the getter function `fn` and an optional modifier function `modifier`.
@@ -9,7 +10,10 @@ export type Modifier<F extends Fn, R> = (arg: ReturnType<F>) => R
  * @template F - The type of the function being wrapped.
  * @template R - The return type of the modifier function.
  */
-export function query<F extends Fn>(fn: F): (...args: Parameters<F>) => ReturnType<F>
+export function query<K extends string, F extends Fn>(
+	queryKey: K,
+	fn: F,
+): <SK extends string>(schemaKey: SK) => (...args: Parameters<F>) => ReturnType<F>
 /**
  * Wraps a function with optional result modifier.
  * @param fn - The function to wrap.
@@ -18,10 +22,18 @@ export function query<F extends Fn>(fn: F): (...args: Parameters<F>) => ReturnTy
  * @template F - The type of the function being wrapped.
  * @template R - The return type of the modifier function.
  */
-export function query<F extends Fn, R>(fn: F, modifier: Modifier<F, R>): (...args: Parameters<F>) => R
-export function query<F extends Fn, R>(fn: F, modifier?: Modifier<F, R>) {
+export function query<K extends string, F extends Fn, R, S extends string = string>(
+	queryKey: K,
+	fn: F,
+	modifier: Modifier<K, F, R>,
+): <SK extends string>(schemaKey: SK) => (...args: Parameters<F>) => R
+export function query<K extends string, F extends Fn, R>(queryKey: K, fn: F, modifier?: Modifier<K, F, R>) {
 	if (!modifier) {
-		return (...args: Parameters<F>) => fn(...args)
+		return (_schemaKey: string) =>
+			(...args: Parameters<F>) =>
+				fn(...args)
 	}
-	return (...args: Parameters<F>) => modifier(fn(...args))
+	return <SK extends string>(schemaKey: SK) =>
+		(...args: Parameters<F>) =>
+			modifier(fn(...args), [`${schemaKey}/${queryKey}`, ...args])
 }
