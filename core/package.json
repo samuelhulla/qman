@@ -1,0 +1,19 @@
+{
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "module": "./dist/index.esm.js",
+    "require": "./dist/index.js"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bunchee -w",
+    "build": "bunchee --dts -m",
+    "lint": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "fetchpro": "*"
+  }
+}
