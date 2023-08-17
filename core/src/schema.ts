@@ -2,7 +2,7 @@ import { entries } from "./util"
 import type { Fn } from "./query"
 
 type QueryMap<T> = {
-	[K in keyof T]: T[K] extends Fn ? (T[K] extends (...args: Parameters<T[K]>) => ReturnType<T[K]> ? T[K] : never) : never
+	[K in keyof T]: T[K] extends Fn ? T[K] : never
 }
 
 type SchemaHash<Key extends string, T extends QueryMap<T>> = {
@@ -10,11 +10,11 @@ type SchemaHash<Key extends string, T extends QueryMap<T>> = {
 }
 
 type QueryArgs<T extends QueryMap<T>, Key extends keyof T> = {
-	[K in keyof T]: Parameters<T[K]>
+	[K in keyof T]: T[K] extends Fn ? Parameters<ReturnType<T[K]>> : never
 }[Key]
 
 type QueryResult<T extends QueryMap<T>, Key extends keyof T> = {
-	[K in keyof T]: ReturnType<T[K]>
+	[K in keyof T]: T[K] extends Fn ? (ReturnType<T[K]> extends Fn ? ReturnType<ReturnType<T[K]>> : never) : never
 }[Key]
 
 type Schema<S, G, P> = {
@@ -55,7 +55,7 @@ export function schema<K extends string, T extends QueryMap<T>>(key: K, queryMap
 	 * @returns An object containing the query function, query key, and schema key.
 	 * @template K - The type of the query key.
 	 */
-	const get = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => queryMap[queryKey](...args) as QueryResult<T, Key>
+	const get = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => queryMap[queryKey](key)(...args) as QueryResult<T, Key>
 	const prepare = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => ({
 		queryFn: () => queryMap[queryKey](...args) as (...args: QueryArgs<T, Key>) => QueryResult<T, Key>,
 		queryKey: [`${key as K}/${queryKey.toString()}`, ...args] as HashedKey<K, Key, typeof args>,
