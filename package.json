@@ -1,9 +1,10 @@
 {
-  "name": "fetchpro",
+  "name": "qman",
+  "author": "Samuel Hulla",
   "version": "0.0.0",
-  "description": "Ultra lightweight fetch manager",
+  "description": "Ultra lightweight query manager",
   "keywords": [
-    "fetchpro",
+    "qman",
     "fetch",
     "fetch-manager",
     "request",
@@ -18,7 +19,8 @@
   ],
   "packageManager": "pnpm@8.6.12",
   "license": "MIT",
-  "repository": 
+  "repository": "github:samuelhulla/qman",
+  "homepage": "https://hulla.dev/qman",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
@@ -47,5 +49,8 @@
   "scripts": {
     "build": "bunchee --dts -m --cwd core",
     "dev": "bunchee -w --cwd core"
+  },
+  "volta": {
+    "node": "18.17.1"
   }
 }
