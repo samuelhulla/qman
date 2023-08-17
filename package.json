@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -45,6 +45,11 @@
       "import": "./firebase/dist/index.mjs",
       "module": "./firebase/dist/index.esm.js",
       "require": "./firebase/dist/index.js"
+    },
+    "./swr": {
+      "import": "./swr/dist/index.mjs",
+      "module": "./swr/dist/index.esm.js",
+      "require": "./swr/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
@@ -53,6 +58,9 @@
     "*": {
       "firebase": [
         "./firebase/dist/index.d.ts"
+      ],
+      "swr": [
+        "./swr/dist/index.d.ts"
       ]
     }
   },
@@ -61,11 +69,13 @@
     "core/dist/**/*.{js,d.ts,mjs,d.mts}",
     "core/package.json",
     "firebase/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "firebase/package.json"
+    "firebase/package.json",
+    "swr/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "swr/package.json"
   ],
   "scripts": {
-    "buildscript": "bunchee --dts -m --cwd",
-    "build": "pnpm buildscript core && pnpm buildscript firebase",
+    "bundle": "bunchee --dts -m --cwd",
+    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr",
     "dev": "bunchee -w --cwd",
     "test": "pnpm jest --config ./config/jest.config.js"
   },
