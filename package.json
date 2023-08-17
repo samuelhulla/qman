@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -22,13 +22,16 @@
   "repository": "github:samuelhulla/qman",
   "homepage": "https://hulla.dev/qman",
   "devDependencies": {
+    "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "bunchee": "^3.6.1",
     "eslint": "^8.47.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.6.2",
     "prettier": "^3.0.1",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
   },
   "exports": {
@@ -37,18 +40,34 @@
       "import": "./core/dist/index.mjs",
       "module": "./core/dist/index.esm.js",
       "require": "./core/dist/index.js"
+    },
+    "./firebase": {
+      "import": "./firebase/dist/index.mjs",
+      "module": "./firebase/dist/index.esm.js",
+      "require": "./firebase/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
   "types": "./core/dist/index.d.ts",
+  "typesVersion": {
+    "*": {
+      "firebase": [
+        "./firebase/dist/index.d.ts"
+      ]
+    }
+  },
   "main": "./core/dist/index.js",
   "files": [
     "core/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "core/package.json"
+    "core/package.json",
+    "firebase/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "firebase/package.json"
   ],
   "scripts": {
-    "build": "bunchee --dts -m --cwd core",
-    "dev": "bunchee -w --cwd core"
+    "buildscript": "bunchee --dts -m --cwd",
+    "build": "pnpm buildscript core && pnpm buildscript firebase",
+    "dev": "bunchee -w --cwd",
+    "test": "pnpm jest --config ./config/jest.config.js"
   },
   "volta": {
     "node": "18.17.1"
