@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -40,7 +40,7 @@
     }
   },
   "module": "./core/dist/index.esm.js",
-  "types": "./core/dist/types/index.d.ts",
+  "types": "./core/dist/index.d.ts",
   "main": "./core/dist/index.js",
   "files": [
     "core/dist/**/*.{js,d.ts,mjs,d.mts}",
