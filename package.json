@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -37,14 +37,15 @@
       "import": "./core/dist/index.mjs",
       "module": "./core/dist/index.esm.js",
       "require": "./core/dist/index.js"
-    }
+    },
+    "./types": "./core/dist/types/index.d.ts"
   },
-  "module": "core/dist/index.esm.js",
-  "types": "core/dist/types/index",
-  "main": "core/dist/index",
+  "module": "./core/dist/index.esm.js",
+  "types": "./core/dist/types/index",
+  "main": "./core/dist/index.js",
   "files": [
-    "core/dist/**/*.{js, d.ts, mjs, d.mts}",
-    "core/package.json"
+    "./core/dist/**/*.{js, d.ts, mjs, d.mts}",
+    "./core/package.json"
   ],
   "scripts": {
     "build": "bunchee --dts -m --cwd core",

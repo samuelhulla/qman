@@ -4,7 +4,7 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "NodeNext",
-    "moduleResolution": "Node16",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": "./",
     "sourceMap": true,
