@@ -1,0 +1,51 @@
+{
+  "name": "fetchpro",
+  "version": "0.0.0",
+  "description": "Ultra lightweight fetch manager",
+  "keywords": [
+    "fetchpro",
+    "fetch",
+    "fetch-manager",
+    "request",
+    "cache",
+    "swr",
+    "query",
+    "hooks",
+    "react",
+    "vanilla",
+    "react-query",
+    "nanoquery"
+  ],
+  "packageManager": "pnpm@8.6.12",
+  "license": "MIT",
+  "repository": 
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
+    "bunchee": "^3.6.1",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.1",
+    "typescript": "^5.1.6"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./core/dist/index.mjs",
+      "module": "./core/dist/index.esm.js",
+      "require": "./core/dist/index.js"
+    }
+  },
+  "types": "core/dist/types/index.d.ts",
+  "module": "core/dist/index.esm.js",
+  "main": "core/dist/index.js",
+  "files": [
+    "core/dist/**/*.{js, d.ts, mjs, d.mts}",
+    "core/package.json"
+  ],
+  "scripts": {
+    "build": "bunchee --dts -m --cwd core",
+    "dev": "bunchee -w --cwd core"
+  }
+}
