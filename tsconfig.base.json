@@ -3,7 +3,7 @@
   "exclude": ["node_modules", "./**/dist"],
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
     "outDir": "./dist",
     "rootDir": "./",
