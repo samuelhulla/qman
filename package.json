@@ -37,15 +37,14 @@
       "import": "./core/dist/index.mjs",
       "module": "./core/dist/index.esm.js",
       "require": "./core/dist/index.js"
-    },
-    "./types": "./core/dist/types/index.d.ts"
+    }
   },
   "module": "./core/dist/index.esm.js",
-  "types": "./core/dist/types/index",
+  "types": "./core/dist/types/index.d.ts",
   "main": "./core/dist/index.js",
   "files": [
-    "./core/dist/**/*.{js, d.ts, mjs, d.mts}",
-    "./core/package.json"
+    "core/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "core/package.json"
   ],
   "scripts": {
     "build": "bunchee --dts -m --cwd core",
