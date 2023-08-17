@@ -1,0 +1,26 @@
+{
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "module": "./dist/index.esm.js",
+    "require": "./dist/index.js"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bunchee -w",
+    "build": "bunchee --dts -m",
+    "lint": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "firebase": ">= 9",
+    "qman": "*",
+    "swr": "^2.2.1"
+  },
+  "devDependencies": {
+    "bunchee": "^3.6.1",
+    "firebase": "^10.1.0",
+    "swr": "^2.2.1"
+  }
+}
