@@ -1,10 +1,18 @@
 import type { CollectionReference, DocumentData, Query, DocumentReference, DocumentChange } from "firebase/firestore"
 import { onSnapshot } from "firebase/firestore"
 
-type DocumentWithId<T extends DocumentData> = T & { id: string }
-type Next = <Error, Data>(err: Error, data?: Data) => void
+type DocumentWithId<D> = D & { id: string }
+type Next = <Error, Data>(err?: Error, data?: Data) => void
 type SnapArgument = Parameters<typeof onSnapshot>[0]
-type Unsubscribe<T> = () => T
+type Unsubscribe<D> = () => D
+type FireData<D> = D extends DocumentData ? D : never
+type Data<T> = T extends CollectionReference<infer D, infer _>
+	? FireData<D>
+	: T extends Query<infer D>
+	? FireData<D>
+	: T extends DocumentReference<infer D>
+	? FireData<D>
+	: never
 
 const updateMap = <T extends DocumentData, M extends Map<string, unknown>>(map: M, change: DocumentChange<T, DocumentData>) =>
 	map.set(change.doc.id, { ...change.doc.data(), id: change.doc.id } as DocumentWithId<T>)
@@ -31,25 +39,25 @@ const snapshotSubscriber = <T extends DocumentData, X extends SnapArgument, C ex
 		error => next(error),
 	)
 
-export function collectionUpdater<T extends DocumentData>(collection: CollectionReference<T>, next: Next): Unsubscribe<T> {
-	const cache: Map<string, DocumentWithId<T>> = new Map()
+export function collectionUpdater<T, D extends DocumentData = Data<T>>(collection: CollectionReference<D, D>, next: Next): Unsubscribe<D> {
+	const cache: Map<string, DocumentWithId<D>> = new Map()
 	const unsub = snapshotSubscriber(collection, cache, next)
-	return unsub as Unsubscribe<T>
+	return unsub as Unsubscribe<D>
 }
 
-export function queryUpdater<T extends DocumentData>(query: Query<T>, next: Next): Unsubscribe<T> {
-	const cache: Map<string, DocumentWithId<T>> = new Map()
+export function queryUpdater<T, D extends DocumentData = Data<T>>(query: Query<D, D>, next: Next): Unsubscribe<D> {
+	const cache: Map<string, DocumentWithId<D>> = new Map()
 	const unsub = snapshotSubscriber(query, cache, next)
-	return unsub as Unsubscribe<T>
+	return unsub as Unsubscribe<D>
 }
 
-export function docUpdater<T extends DocumentData>(doc: DocumentReference<T>, next: Next): Unsubscribe<T> {
+export function docUpdater<T, D extends DocumentData = Data<T>>(doc: DocumentReference<D, D>, next: Next): Unsubscribe<D> {
 	const unsub = onSnapshot(
 		doc,
 		snapshot => {
-			next(null, { ...snapshot.data(), id: snapshot.id } as DocumentWithId<T>)
+			next(null, { ...snapshot.data(), id: snapshot.id } as DocumentWithId<D>)
 		},
 		err => next(err),
 	)
-	return unsub as Unsubscribe<T>
+	return unsub as Unsubscribe<D>
 }
