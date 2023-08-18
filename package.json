@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
