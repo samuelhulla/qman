@@ -14,4 +14,3 @@ export function subscribe<T, K extends Key, U extends Updater<T>, E = Error>(val
 	const res = useSWRSub(queryKey, observer as SWRSubscription<K, T, E>)
 	return res as SWRSubscriptionResponse<UpdaterResult<U>, E>
 }
-
