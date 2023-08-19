@@ -55,9 +55,9 @@ export function schema<K extends string, T extends QueryMap<T>>(key: K, queryMap
 	 * @returns An object containing the query function, query key, and schema key.
 	 * @template K - The type of the query key.
 	 */
-	const get = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => queryMap[queryKey](key)(...args) as QueryResult<T, Key>
+	const get = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => queryMap[queryKey](key, ...args) as QueryResult<T, Key>
 	const prepare = <Key extends keyof T>(queryKey: Key, args: QueryArgs<T, Key>) => ({
-		queryFn: () => queryMap[queryKey](...args) as (...args: QueryArgs<T, Key>) => QueryResult<T, Key>,
+		queryFn: () => queryMap[queryKey](key, ...args) as (key: K, ...args: QueryArgs<T, Key>) => QueryResult<T, Key>,
 		queryKey: [`${key as K}/${queryKey.toString()}`, ...args] as HashedKey<K, Key, typeof args>,
 	})
 	return {
