@@ -2,8 +2,7 @@ export type Fn = (...args: any[]) => any
 export type HashedQueryKey<S extends string, K extends string, A extends readonly unknown[]> = [`${S}/${K}`, ...A]
 export type Modifier<K extends string, F extends Fn, R> = (arg: ReturnType<F>, hashKey: HashedQueryKey<string, K, Parameters<F>>) => R
 export type Query<F extends Fn, R = ReturnType<F>> = (...args: Parameters<F>) => R
-export type QueryCallback<R, F extends Fn> = <SK extends string>(schemaKey: SK) => Query<F, R>
-export type QueryInfo<R, F extends Fn> = QueryCallback<R, F>
+export type QueryResult<K extends string, F extends Fn, R = ReturnType<F>> = [K, Query<F, R>]
 
 /**
  * Builds a query from the getter function `fn` and an optional modifier function `modifier`.
@@ -13,7 +12,7 @@ export type QueryInfo<R, F extends Fn> = QueryCallback<R, F>
  * @template F - The type of the function being wrapped.
  * @template R - The return type of the modifier function.
  */
-export function query<QK extends string, F extends Fn>(queryKey: QK, fn: F): QueryInfo<ReturnType<F>, F>
+export function query<QK extends string, F extends Fn>(queryKey: QK, fn: F): QueryResult<QK, F, ReturnType<F>>
 /**
  * Wraps a function with optional result modifier.
  * @param fn - The function to wrap.
@@ -23,14 +22,17 @@ export function query<QK extends string, F extends Fn>(queryKey: QK, fn: F): Que
  * @template R - The return type of the modifier function.
  */
 export function query<QK extends string, F extends Fn, R, S extends string = string>(
-	queryKey: QK,
-	fn: F,
-	modifier: Modifier<QK, F, R>,
-): QueryInfo<R, F>
+  queryKey: QK,
+  fn: F,
+  modifier: Modifier<QK, F, R>,
+): QueryResult<QK, F, R>
 export function query<QK extends string, F extends Fn, R>(queryKey: QK, fn: F, modifier?: Modifier<QK, F, R>) {
-	if (!modifier) {
-		return <const SK extends string>(_schemaKey: SK, ...args: Parameters<F>) => fn(...args)
-	}
-	return <const SK extends string>(schemaKey: SK, ...args: Parameters<F>) =>
-		modifier(fn(...args), [`${schemaKey}/${queryKey}`, ...args] as HashedQueryKey<SK, QK, Parameters<F>>)
+  if (!modifier) {
+    return [queryKey, <const SK extends string>(_schemaKey: SK, ...args: Parameters<F>) => fn(...args)]
+  }
+  return [
+    queryKey,
+    <const SK extends string>(schemaKey: SK, ...args: Parameters<F>) =>
+      modifier(fn(...args), [`${schemaKey}/${queryKey}`, ...args] as HashedQueryKey<SK, QK, Parameters<F>>),
+  ]
 }
