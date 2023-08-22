@@ -1,7 +1,7 @@
 import type { SWRSubscription, SWRSubscriptionOptions, SWRSubscriptionResponse } from "swr/subscription"
 import useSWRSub from "swr/subscription"
 
-type Next = <Error, Data>(error: Error, data?: Data) => void
+export type Next = <Error, Data>(error: Error, data?: Data) => void
 type SWRNext<T, E> = SWRSubscriptionOptions<T, E>
 type Key = Parameters<typeof useSWRSub>[0]
 
