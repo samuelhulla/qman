@@ -1,8 +1,8 @@
 import type { CollectionReference, DocumentData, Query, DocumentReference, DocumentChange } from "firebase/firestore"
+import type { Next } from "../../swr/src/subscribe"
 import { onSnapshot } from "firebase/firestore"
 
 type DocumentWithId<D> = D & { id: string }
-type Next = <Error, Data>(err?: Error, data?: Data) => void
 type SnapArgument = Parameters<typeof onSnapshot>[0]
 type Unsubscribe<D> = () => D
 type FireData<D> = D extends DocumentData ? D : never
