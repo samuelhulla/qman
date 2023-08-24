@@ -17,30 +17,23 @@ type Args<Q extends Query<DocumentData>> = {
   queryKey: [string, ...unknown[]]
   pageIndex: number
   lastData: DocumentWithId<Data<Q>>[]
-  initialQuery: Q
+  query: Q
   pageSize: number
 }
 
 type QS<D extends DocumentData> = QuerySnapshot<D>
 
-export async function paginate<Q extends Query<DocumentData>, A extends Args<Q>, D extends DocumentData = Data<Q>>(
-  args: A,
-): Promise<DocumentWithId<D>[]> {
-  const { lastData, initialQuery, pageSize } = args
-  const initial = query(initialQuery, limit(pageSize)) as Query<D>
-  let snapshots: QS<D> | null = null
-  if (!lastData) {
-    snapshots = await getDocs(initial)
-    return snapshots.docs.map(doc => ({ ...(doc.data() as D), id: doc.id })) as DocumentWithId<D>[]
+export const paginate = async <Q extends Query<DocumentData>, A extends Args<Q>>(args: A) => {
+  const { pageSize, query: ref } = args
+  const firstPage = query(ref, limit(pageSize))
+  let initialCache: QS<Data<Q>> | undefined
+  // @ts-ignore we don't want to assign it here, on purpose for caching
+  if (!initialCache) {
+    initialCache = (await getDocs(firstPage)) as QS<Data<Q>>
+    return initialCache.docs.map(doc => ({ ...doc.data(), id: doc.id }))
   }
-  if (snapshots) {
-    const last = (snapshots as QS<D>).docs[(snapshots as QS<D>).docs.length - 1]
-    if (!last) {
-      return lastData as DocumentWithId<D>[]
-    }
-    const next = query(initialQuery, startAfter(last.id), limit(pageSize)) as Query<D>
-    snapshots = await getDocs(next)
-    return snapshots.docs.map(doc => ({ ...(doc.data() as D), id: doc.id })) as DocumentWithId<D>[]
-  }
-  throw Error("Unsupported internal action on firebase detected")
+  const lastVisible = (initialCache as QuerySnapshot).docs[(initialCache as QuerySnapshot).docs.length - 1]
+  const nextPage = query(ref, startAfter(lastVisible), limit(pageSize))
+  const nextCache = await getDocs(nextPage)
+  return nextCache.docs.map(doc => ({ ...doc.data(), id: doc.id }))
 }
