@@ -7,14 +7,14 @@ type Updater<T, K extends Key> = (arg: { queryKey: K; initialData: T; lastData: 
 type UpdaterResult<U> = U extends (...args: any[]) => infer R ? (R extends Fn ? ReturnType<R> : R) : U
 
 export const getKey =
-  <T, K extends Key, U extends Updater<T, K>>(queryKey: K, initialQuery: T, pageSize: number) =>
+  <T, K extends Key, U extends Updater<T, K>>(queryKey: K, query: T, pageSize: number) =>
   (pageIndex: number, lastData: UpdaterResult<U>) => {
     return {
       queryKey,
       pageIndex,
       lastData,
       pageSize,
-      initialQuery,
+      query,
     }
   }
 
