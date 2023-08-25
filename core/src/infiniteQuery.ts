@@ -16,6 +16,6 @@ export function infiniteQuery<QK extends string, F extends Fn, R>(
   paginator: Paginator<QK, F, R>,
 ): InfiniteQueryResult<QK, F, R> {
   const exec = <SK extends string>(schemaKey: SK, ...args: PageParams<F>) =>
-    paginator(fn(...args), [`${schemaKey}/${queryKey}`, ...args] as HashedQueryKey<SK, QK, PageParams<F>>)
+    paginator(fn(...args.slice(2)), [`${schemaKey}/${queryKey}`, ...args] as HashedQueryKey<SK, QK, PageParams<F>>)
   return [queryKey, exec as unknown as InfiniteQuery<F, R>, "infiniteQuery"]
 }
