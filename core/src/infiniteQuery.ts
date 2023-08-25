@@ -1,6 +1,6 @@
 import type { Fn, HashedQueryKey } from "./query"
 
-type PageParams<F extends Fn> = Parameters<(page: number, ...args: Parameters<F>) => ReturnType<F>>
+type PageParams<F extends Fn> = Parameters<(page: number, pageSize: number, ...args: Parameters<F>) => ReturnType<F>>
 
 type Paginator<QK extends string, F extends Fn, R = ReturnType<F>> = (
   arg: ReturnType<F>,

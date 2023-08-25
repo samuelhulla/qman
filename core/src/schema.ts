@@ -38,7 +38,7 @@ export function schema<SK extends string, Q extends KeyFnPair[]>(schemaKey: SK, 
   const schemaMap = queries.reduce(
     (acc, [queryKey, queryFn, type]) => ({
       ...acc,
-      [queryKey]: type === "infiniteQuery" ? (...args) => queryFn(...args.slice(1)) : queryFn,
+      [queryKey]: type === "infiniteQuery" ? (...args) => queryFn(...args.slice(2)) : queryFn,
     }),
     {} as SchemaMap<Q>,
   )
