@@ -15,7 +15,7 @@ type Data<T> = T extends CollectionReference<infer D, infer _>
   : never
 
 const updateMap = <T extends DocumentData, M extends Map<string, unknown>>(map: M, change: DocumentChange<T, DocumentData>) =>
-  map.set(change.doc.id, { ...change.doc.data(), id: change.doc.id } as DocumentWithId<T>)
+  map.set(change.doc.id, change.doc.exists() ? ({ ...change.doc.data(), id: change.doc.id } as DocumentWithId<T>) : null)
 
 const snapshotSubscriber = <T extends DocumentData, X extends SnapArgument, C extends Map<string, T>>(on: X, cache: C, next: Next) =>
   onSnapshot(
