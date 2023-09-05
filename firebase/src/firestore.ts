@@ -58,7 +58,7 @@ export function docUpdater<T, D extends DocumentData = Data<T>>(doc: DocumentRef
   const unsub = onSnapshot(
     doc,
     snapshot => {
-      next(null, { ...snapshot.data(), id: snapshot.id } as DocumentWithId<D>)
+      next(null, snapshot.exists() ? ({ ...snapshot.data(), id: snapshot.id } as DocumentWithId<D>) : null)
     },
     err => next(err),
   )
