@@ -11,6 +11,8 @@
     "cache",
     "swr",
     "query",
+    "tanstack query",
+    "react query",
     "hooks",
     "react",
     "vanilla",
@@ -32,7 +34,7 @@
     "jest": "^29.6.2",
     "prettier": "^3.0.1",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -50,6 +52,11 @@
       "import": "./swr/dist/index.mjs",
       "module": "./swr/dist/index.esm.js",
       "require": "./swr/dist/index.js"
+    },
+    "./query": {
+      "import": "./query/dist/index.mjs",
+      "module": "./query/dist/index.esm.js",
+      "require": "./query/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
@@ -61,6 +68,9 @@
       ],
       "swr": [
         "./swr/dist/index.d.ts"
+      ],
+      "query": [
+        "./query/dist/index.d.ts"
       ]
     }
   },
@@ -71,7 +81,9 @@
     "firebase/dist/**/*.{js,d.ts,mjs,d.mts}",
     "firebase/package.json",
     "swr/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "swr/package.json"
+    "swr/package.json",
+    "query/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "query/package.json"
   ],
   "scripts": {
     "bundle": "bunchee --dts -m --cwd",
@@ -80,6 +92,6 @@
     "test": "pnpm jest --config ./config/jest.config.js"
   },
   "volta": {
-    "node": "18.17.1"
+    "node": "21.5.0"
   }
 }
