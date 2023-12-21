@@ -19,7 +19,7 @@ const getUserById = (id: string) => fetch(`your.api/users/${id}`)
 export const users = schema(
   'users',
   query('allUsers', getAllUsers, use), 
-  query('byId', getUserById, use)
+  query('byId', getUserById, use),
   query('somePromise', directDBPromiseFn) // note we don't have to use swr/query adapters here
 )
 
