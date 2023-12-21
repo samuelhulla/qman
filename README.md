@@ -20,6 +20,7 @@ export const users = schema(
   'users',
   query('allUsers', getAllUsers, use), 
   query('byId', getUserById, use)
+  query('somePromise', directDBPromiseFn) // note we don't have to use swr/query adapters here
 )
 
 // Later in code (usually in different file) use your schema.
@@ -37,5 +38,6 @@ Adds support for advanced query usage, such as
 - firebase
 - subscriptions
 - mutations
+- and more
 
-> documentation with beta release that will expand on these topics
+> documentation will come with beta release, will expand on these topics.
