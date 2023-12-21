@@ -37,6 +37,7 @@ i.e. you can have a schema called `users` and `posts` which both ship `byId` que
 Adds support for advanced query usage, such as
 - firebase
 - subscriptions
+- infinite and paginated queries
 - mutations
 - and more
 
