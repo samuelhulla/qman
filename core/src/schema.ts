@@ -1,59 +1,30 @@
-import type { Query, Fn } from "./query"
+import type { Invocation } from "./call"
 
-type KeyFnPair = [string, Fn, "infiniteQuery" | "query"]
+type Key<Q> = Queries<Q>[number]["key"]
+type Queries<Q> = Q extends [Invocation<infer K, infer A, infer R, infer T>, ...infer Qs] ? [Invocation<K, A, R, T>, ...Queries<Qs>] : []
+type QueryMap<Q> = {
+  [K in Queries<Q>[number] as K["key"]]: Parameters<K["getter"]>
+}
+type QueryReturn<Q, QK extends Key<Q>> = {
+  [K in Queries<Q>[number] as K["key"]]: K extends Invocation<K["key"], any, infer R, any> ? Awaited<R> : never
+}[QK]
+type QueryArgs<Q, K extends Key<Q>> = Q extends Queries<Q> ? (K extends Key<Q> ? QueryMap<Q>[K] : never) : never
 
-type SchemaMap<Q> = Q extends KeyFnPair[] ? { [T in Q[number] as T[0]]: T[1] } : never
-
-type QueryArgs<Q, K> = Q extends KeyFnPair[] ? (K extends keyof SchemaMap<Q> ? Parameters<SchemaMap<Q>[K]> : never) : never
-
-type QueryResult<Q, K> = Q extends KeyFnPair[]
-  ? K extends keyof SchemaMap<Q>
-    ? SchemaMap<Q>[K] extends Query<Fn, infer R>
-      ? R
-      : never
-    : never
-  : never
-
-type Schema<S, G> = {
-  schema: S
-  get: G
+type Schema<Q> = {
+  key: <K extends Key<Q>>(queryKey: K) => string
+  get: <K extends Key<Q>>(queryKey: K, args: QueryArgs<Q, K>) => QueryReturn<Q, K>
 }
 
-/**
- * Creates a new schema object with the specified key and query map.
- * @param key - The key for the schema.
- * @param queryMap - An object that maps query keys to query functions.
- * @returns A new schema object that maps flattened query keys to query functions.
- * @template K - The type of the schema key.
- * @template T - The type of the query map.
- * @example
- * ```ts
- * const user = schema('user',
- *   query('get', (id: string) => ({ id, name, picture })),
- *   query('picture', (id: string) => ({ id, name, picture }), ({ picture }) => picture),
- * )
- * ```
- */
-export function schema<SK extends string, Q extends KeyFnPair[]>(schemaKey: SK, ...queries: Q) {
-  const schemaMap = queries.reduce(
-    (acc, [queryKey, queryFn]) => ({
-      ...acc,
-      [queryKey]: queryFn,
-    }),
-    {} as SchemaMap<Q>,
-  )
-  /**
-   * Retrieves a query function from the specified schema.
-   * @param key - The key of the query function to retrieve.
-   * @param queryArgs - The arguments to pass to the query function.
-   * @returns An object containing the query function, query key, and schema key.
-   * @template K - The type of the query key.
-   */
-  const get = <Key extends keyof SchemaMap<Q>>(queryKey: Key, args: QueryArgs<Q, Key>) =>
-    schemaMap[queryKey]?.(schemaKey, ...args) as QueryResult<Q, Key>
+export function schema<const K, Q extends Invocation<any, any, any, any>[]>(schemaKey: K, ...queries: Q): Schema<Q> {
+  const key = (queryKey: Key<Q>) => `${schemaKey}/${queryKey}`
+  const get = <QK extends Key<Q>>(queryKey: QK, args: QueryArgs<Q, QK>) => {
+    const match = queries.find(q => q.key === queryKey)
+    return match?.type === "query"
+      ? (match?.getter(`${schemaKey}/${queryKey}`, ...args) as QueryReturn<Q, QK>)
+      : (match?.getter(...args) as QueryReturn<Q, QK>)
+  }
   return {
+    key,
     get,
-    schema: schemaMap,
-    schemaKey,
-  } as Schema<typeof schemaMap, typeof get>
+  }
 }
