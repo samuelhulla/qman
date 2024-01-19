@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.1.1",
+  "version": "0.2.4",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -11,6 +11,8 @@
     "cache",
     "swr",
     "query",
+    "tanstack query",
+    "react query",
     "hooks",
     "react",
     "vanilla",
@@ -25,14 +27,14 @@
     "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
-    "bunchee": "^3.6.1",
+    "bunchee": "^4.2.11",
     "eslint": "^8.47.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jest": "^29.6.2",
     "prettier": "^3.0.1",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -50,6 +52,11 @@
       "import": "./swr/dist/index.mjs",
       "module": "./swr/dist/index.esm.js",
       "require": "./swr/dist/index.js"
+    },
+    "./query": {
+      "import": "./query/dist/index.mjs",
+      "module": "./query/dist/index.esm.js",
+      "require": "./query/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
@@ -61,6 +68,9 @@
       ],
       "swr": [
         "./swr/dist/index.d.ts"
+      ],
+      "query": [
+        "./query/dist/index.d.ts"
       ]
     }
   },
@@ -71,15 +81,17 @@
     "firebase/dist/**/*.{js,d.ts,mjs,d.mts}",
     "firebase/package.json",
     "swr/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "swr/package.json"
+    "swr/package.json",
+    "query/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "query/package.json"
   ],
   "scripts": {
     "bundle": "bunchee --dts -m --cwd",
-    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr",
+    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr && pnpm bundle query",
     "dev": "bunchee -w --cwd",
     "test": "pnpm jest --config ./config/jest.config.js"
   },
   "volta": {
-    "node": "18.17.1"
+    "node": "21.5.0"
   }
 }
