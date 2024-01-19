@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -13,6 +13,7 @@
     "query",
     "tanstack query",
     "react query",
+    "axios",
     "hooks",
     "react",
     "vanilla",
@@ -57,6 +58,11 @@
       "import": "./query/dist/index.mjs",
       "module": "./query/dist/index.esm.js",
       "require": "./query/dist/index.js"
+    },
+    "./axios": {
+      "import": "./axios/dist/index.mjs",
+      "module": "./axios/dist/index.esm.js",
+      "require": "./axios/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
@@ -71,6 +77,9 @@
       ],
       "query": [
         "./query/dist/index.d.ts"
+      ],
+      "axios": [
+        "./axios/dist/index.d.ts"
       ]
     }
   },
@@ -83,11 +92,13 @@
     "swr/dist/**/*.{js,d.ts,mjs,d.mts}",
     "swr/package.json",
     "query/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "query/package.json"
+    "query/package.json",
+    "axios/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "axios/package.json"
   ],
   "scripts": {
     "bundle": "bunchee --dts -m --cwd",
-    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr && pnpm bundle query",
+    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr && pnpm bundle query && pnpm bundle axios",
     "dev": "bunchee -w --cwd",
     "test": "pnpm jest --config ./config/jest.config.js"
   },
