@@ -1,3 +1,3 @@
 export { subscribe } from "./subscribe"
-export { use } from "./use"
+export { useSWR } from "./useSWR"
 export { data } from "./data"
