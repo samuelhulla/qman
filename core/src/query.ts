@@ -8,7 +8,15 @@ export type Query<K extends string, A extends Args, R, T extends Types, M extend
   key: K
   getter: Getter<A, R, M>
   type: T
+  method: M
 }
+
+export type QueryKey<QK extends string, M extends Methods> =
+  | {
+      queryKey: QK
+      method: M
+    }
+  | QK
 
 export type Fn = (...args: any[]) => any
 export type HashedQueryKey<S extends string, K extends string, A extends Args> = [`${S}/${K}`, ...A]
@@ -22,8 +30,8 @@ export type Modifier<K extends string, A extends Args, R1, R> = (arg: R1, hashKe
  * @template F - The type of the function being wrapped.
  * @template R - The return type of the modifier function.
  */
-export function query<QK extends string, A extends Args, R, M extends Methods = "GET">(
-  queryKey: QK,
+export function query<const QK extends string, A extends Args, R, const M extends Methods = "GET">(
+  queryKey: QueryKey<QK, M>,
   getter: Getter<A, R, M>,
 ): Query<QK, A, R, "query", M>
 /**
@@ -34,22 +42,24 @@ export function query<QK extends string, A extends Args, R, M extends Methods = 
  * @template F - The type of the function being wrapped.
  * @template R - The return type of the modifier function.
  */
-export function query<QK extends string, A extends Args, R1, R, M extends Methods = "GET">(
-  queryKey: QK,
+export function query<const QK extends string, A extends Args, R1, R, const M extends Methods = "GET">(
+  queryKey: QueryKey<QK, M>,
   fn: Getter<A, R1, M>,
   modifier: Modifier<QK, A, R1, R>,
 ): Query<QK, A, R, "modifiedQuery", M>
-export function query<QK extends string, A extends Args, R1, R, M extends Methods = "GET">(
-  queryKey: QK,
+export function query<const QK extends string, A extends Args, R1, R, const M extends Methods = "GET">(
+  queryKey: QueryKey<QK, M>,
   fn: Getter<A, R1, M>,
   modifier?: Modifier<QK, A, R1, R>,
 ) {
+  const method: M = typeof queryKey === "string" ? ("GET" as M) : queryKey.method
+  const key: QK = typeof queryKey === "string" ? queryKey : queryKey.queryKey
   if (!modifier) {
-    const getter = <SK extends string>(_schemaKey: SK, ...args: A) => fn(...args)
+    const getter = (_schemaKey: string, ...args: A) => fn(...args)
     // This type conversion is incorrect, but it serves to act consistently with Call in type Params
-    return { key: queryKey, getter: getter as unknown as Getter<A, R, M>, type: "query" }
+    return { key, getter: getter as unknown as Getter<A, R, M>, type: "query", method }
   }
-  const getter = <const SK extends string>(schemaKey: SK, ...args: A) => modifier(fn(...args), [`${schemaKey}/${queryKey}`, ...args])
+  const getter = <const SK extends string>(schemaKey: SK, ...args: A) => modifier(fn(...args), [`${schemaKey}/${key}`, ...args])
   // This type conversion is incorrect, but it serves to act consistently with Call in type Params
-  return { key: queryKey, getter: getter as unknown as Getter<A, R, M>, type: "modifiedQuery" }
+  return { key, getter: getter as unknown as Getter<A, R, M>, type: "modifiedQuery", method }
 }

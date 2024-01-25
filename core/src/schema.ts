@@ -61,8 +61,8 @@ export type Schema<Q> = CommonMethods<Q> & Omit<SchemaDefinition<Q>, UnusedMetho
 
 export function schema<const K, Q extends Query<any, any, any, any, any>[]>(schemaKey: K, ...queries: Q): Schema<Q> {
   const key = (queryKey: Key<Q>) => `${schemaKey}/${queryKey}`
-  const call = <QK extends Key<Q>, A extends QueryArgs<Q, QK>>(queryKey: QK, args: A) => {
-    const matches = queries.filter(q => q.key === queryKey)
+  const call = <QK extends Key<Q>, A extends QueryArgs<Q, QK>, M extends Methods>(queryKey: QK, args: A, method: M = "GET" as M) => {
+    const matches = queries.filter(q => q.key === queryKey && method === q.method)
     if (matches.length > 1) {
       console.warn(
         `[qman]: Multiple queries with key ${queryKey} found in schema ${schemaKey}. Using the first one. If you have endpoints with same key but different methods specified use the schema.method syntax`,
@@ -74,7 +74,7 @@ export function schema<const K, Q extends Query<any, any, any, any, any>[]>(sche
   const methodCall =
     <M extends Methods>(_method: M): SchemaCall<Q, M> =>
     <QK extends MethodKeys<Q, M>, A extends QueryArgsWithMethod<Q, M, QK>>(queryKey: QK, args: A) => {
-      const match = queries.find(q => q.key === queryKey)
+      const match = queries.find(q => q.key === queryKey && q.method === _method)
       return match?.getter(`${schemaKey}/${queryKey}`, ...args) as QueryReturnWithMethod<Q, QK, M>
     }
   return {
