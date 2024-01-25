@@ -14,13 +14,22 @@
     "lint": "tsc --noEmit"
   },
   "peerDependencies": {
-    "firebase": ">= 9",
     "qman": "*",
+    "react": "^18.2.0",
+    "react-native": "^0.73.2",
+    "@react-native-community/netinfo": "^11.2.1",
     "swr": "^2.2.1"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    },
+    "@react-native-community/netinfo": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "bunchee": "^3.6.1",
-    "firebase": "^10.1.0",
-    "swr": "^2.2.1"
+    "swr": "^2.2.4"
   }
 }
