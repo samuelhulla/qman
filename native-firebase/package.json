@@ -1,0 +1,24 @@
+{
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "module": "./dist/index.esm.js",
+    "require": "./dist/index.js"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bunchee -w",
+    "build": "bunchee --dts -m",
+    "lint": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "qman": "*",
+    "@react-native-firebase/auth": "^18.7.3",
+    "@react-native-firebase/firestore": "^18.7.3"
+  },
+  "devDependencies": {
+    "bunchee": "^3.6.1"
+  }
+}
