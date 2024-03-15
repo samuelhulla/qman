@@ -1,7 +1,7 @@
 {
   "name": "qman",
   "author": "Samuel Hulla",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Ultra lightweight query manager",
   "keywords": [
     "qman",
@@ -18,7 +18,11 @@
     "react",
     "vanilla",
     "react-query",
-    "nanoquery"
+    "nanoquery",
+    "firebase",
+    "react-native-firebase",
+    "firestore",
+    "auth"
   ],
   "packageManager": "pnpm@8.6.12",
   "license": "MIT",
@@ -63,6 +67,11 @@
       "import": "./axios/dist/index.mjs",
       "module": "./axios/dist/index.esm.js",
       "require": "./axios/dist/index.js"
+    },
+    "./native-firebase": {
+      "import": "./native-firebase/dist/index.mjs",
+      "module": "./native-firebase/dist/index.esm.js",
+      "require": "./native-firebase/dist/index.js"
     }
   },
   "module": "./core/dist/index.esm.js",
@@ -71,6 +80,9 @@
     "*": {
       "firebase": [
         "./firebase/dist/index.d.ts"
+      ],
+      "native-firebase": [
+        "./native-firebase/dist/index.d.ts"
       ],
       "swr": [
         "./swr/dist/index.d.ts"
@@ -94,11 +106,13 @@
     "query/dist/**/*.{js,d.ts,mjs,d.mts}",
     "query/package.json",
     "axios/dist/**/*.{js,d.ts,mjs,d.mts}",
-    "axios/package.json"
+    "axios/package.json",
+    "native-firebase/dist/**/*.{js,d.ts,mjs,d.mts}",
+    "native-firebase/package.json"
   ],
   "scripts": {
     "bundle": "bunchee --dts -m --cwd",
-    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr && pnpm bundle query && pnpm bundle axios",
+    "build": "pnpm bundle core && pnpm bundle firebase && pnpm bundle swr && pnpm bundle query && pnpm bundle axios && pnpm bundle native-firebase",
     "dev": "bunchee -w --cwd",
     "test": "pnpm jest --config ./config/jest.config.js"
   },
